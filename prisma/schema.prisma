@@ -1,0 +1,80 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Channel {
+  id       Int       @id @default(autoincrement())
+  name     String
+  programs Program[]
+}
+
+model Program {
+  id        Int       @id @default(autoincrement())
+  name      String
+  category  String
+  type      String
+  channelId Int
+  channel   Channel   @relation(fields: [channelId], references: [id])
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  moviesId  Int
+  movies    Movies    @relation(fields: [moviesId], references: [id])
+  favorites favorite[]
+}
+
+model Movies {
+  id        Int       @id @default(autoincrement())
+  title     String
+  video     String
+  categories Category[]
+}
+
+model User {
+  id                Int       @id @default(autoincrement())
+  username          String
+  firstname         String?
+  lastname          String?
+  roles             Int
+  password          String
+  email             String?
+  phoneNum          Int?
+  imgUrl            String
+  refreshToken      String?
+  stars             Int?
+  notificationCount Int?
+  lastNotified      DateTime?
+  bookmarkCount     Int?
+  favoredNumber     Int       @default(0)
+  favoredBy         Json?
+  passwordResetHash String    @default("")
+  license           String?   @default(null)
+  suspended         Boolean?
+  favorites favorite[]
+  histories history[]
+}
+
+
+
+model favorite {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  categoryId Int
+  user      User      @relation(fields: [userId], references: [id])
+  category  Category  @relation(fields: [categoryId], references: [id])
+}
+
+model history {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+}
