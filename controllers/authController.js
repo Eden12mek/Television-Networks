@@ -1,47 +1,55 @@
 const bcrypt = require('bcrypt');
-const jwt=require('jsonwebtoken');
-const User=require('../data/User');
-const Activity=require('../data/Activity')
+const jwt = require('jsonwebtoken');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-const handleAuth=async (req,res)=>{
-    console.log(req.body)
-    const {username,password}=req.body;
-    if(!username || !password)return res.status(400).json({"message":"both username and password is required"});
-    const foundUser= await User.findOne({username:username}).exec();
-    if(!foundUser) return res.status(400).json({"message":"username is not available sign up first"});
-    if(foundUser.suspended)return res.status(400).json({"message":"your are temporarly banned from accessing your account contact us"});
-    const match= await bcrypt.compare(password,foundUser.password);
-    if(match){
-        const roles=foundUser.roles;
-        const access_token=jwt.sign(
-            {
-                "userInfo":{
-                    "username":foundUser.username,
-                    "roles":roles
-                }
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            {expiresIn:'1d'}
-        )
-        const refresh_token=jwt.sign(
-            {"username":foundUser.username},
-            process.env.REFRESH_TOKEN_SECRET,
-            {expiresIn:'1d'}
-        )
-        foundUser.refreshToken=refresh_token;
-        console.log(access_token.split('.'));
-        const result=await foundUser.save();
-        const result2=await Activity.create({
-            "username":username,
-            "activity":"logged in",
-            "time":Date()
-        })
-        console.log(result2);
-        res.cookie('jwt',refresh_token,{httpOnly:true,sameSite:'None',maxAge:24*60*60*1000}); //secure:true in production
-        res.json({access_token,foundUser});
-    }else{
-        res.status(401).json({"message":"wrong password"})
+const handleAuth = async (req, res) => {
+    console.log(req.body);
+    const { phoneNum, password } = req.body;
+    
+    if (!phoneNum || !password) {
+        return res.status(400).json({ "message": "Both phone number and password are required" });
+    }
+
+    try {
+        const foundUser = await prisma.user.findUnique({ where: { phoneNum:phoneNum } });
+        if (!foundUser) {
+            return res.status(400).json({ "message": "Phone Number is not registered. Please sign up first" });
+        }
+
+        const match = await bcrypt.compare(password, foundUser.password);
+        if (match) {
+            const access_token = jwt.sign(
+                {
+                    "userInfo": {
+                        "username": foundUser.username,
+                        "id": foundUser.id
+                    }
+                },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: '1d' }
+            );
+
+            const refresh_token = jwt.sign(
+                { "username": foundUser.username },
+                process.env.REFRESH_TOKEN_SECRET,
+                { expiresIn: '1d' }
+            );
+
+            await prisma.user.update({
+                where: { id: foundUser.id },
+                data: { refreshToken: refresh_token }
+            });
+
+            res.cookie('jwt', refresh_token, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 }); // secure:true in production
+            res.json({ access_token, foundUser });
+        } else {
+            res.status(401).json({ "message": "Wrong password" });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ "message": "Server error" });
     }
 }
 
-module.exports={handleAuth}
+module.exports = { handleAuth };

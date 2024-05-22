@@ -13,54 +13,47 @@ model Channel {
   id       Int       @id @default(autoincrement())
   name     String
   suspend  Boolean    @default(true)
-  programs Program[]
+  movies    Movies[]
 }
 
-model Program {
-  id        Int       @id @default(autoincrement())
-  video      String
-  duration   Int
-  title      String
-  category  String
-  type      String
-  suspend  Boolean     @default(true)
-  channelId Int
-  channel   Channel   @relation(fields: [channelId], references: [id])
-}
 
 model Category {
   id        Int       @id @default(autoincrement())
   name      String
-  moviesId  Int
-  movies    Movies    @relation(fields: [moviesId], references: [id])
-  favorites favorite[]
+  movies    Movies[]
 }
 
 model Movies {
+  id              Int       @id @default(autoincrement())
+  title           String
+  duration        Int
+  description     String
+  channelId       Int
+  channel         Channel   @relation(fields: [channelId], references: [id])
+  typeId          Int
+  type            Type      @relation(fields: [typeId], references: [id])
+  categoryId      Int
+  category        Category  @relation(fields: [categoryId], references: [id])
+  suspend         Boolean     @default(true)
+  videoUrl        String
+  favorites       favorite[]
+}
+
+model Type {
   id        Int       @id @default(autoincrement())
-  title     String
-  video     String
-  categories Category[]
+  name      String
+  movies    Movies[]
 }
 
 model User {
   id                Int       @id @default(autoincrement())
-  username          String
-  roles             Int
+  username          String    
   password          String
   email             String
-  phoneNum          Int
+  phoneNum          String    @unique
   imgUrl            String
-  refreshToken      String
-  stars             Int
-  notificationCount Int
-  lastNotified      DateTime
-
-  favoredNumber     Int       @default(0)
-  favoredBy         Json
-  passwordResetHash String 
-  
-  suspended         Boolean
+  suspended         Boolean?
+  refreshToken      String?
   favorites favorite[]
   histories history[]
 }
@@ -68,11 +61,11 @@ model User {
 
 
 model favorite {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  categoryId Int
-  user      User      @relation(fields: [userId], references: [id])
-  category  Category  @relation(fields: [categoryId], references: [id])
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  moviesId    Int
+  movies      Movies  @relation(fields: [moviesId], references: [id])
 }
 
 model history {
