@@ -12,14 +12,18 @@ generator client {
 model Channel {
   id       Int       @id @default(autoincrement())
   name     String
+  suspend  Boolean    @default(true)
   programs Program[]
 }
 
 model Program {
   id        Int       @id @default(autoincrement())
-  name      String
+  video      String
+  duration   Int
+  title      String
   category  String
   type      String
+  suspend  Boolean     @default(true)
   channelId Int
   channel   Channel   @relation(fields: [channelId], references: [id])
 }
@@ -42,23 +46,21 @@ model Movies {
 model User {
   id                Int       @id @default(autoincrement())
   username          String
-  firstname         String?
-  lastname          String?
   roles             Int
   password          String
-  email             String?
-  phoneNum          Int?
+  email             String
+  phoneNum          Int
   imgUrl            String
-  refreshToken      String?
-  stars             Int?
-  notificationCount Int?
-  lastNotified      DateTime?
-  bookmarkCount     Int?
+  refreshToken      String
+  stars             Int
+  notificationCount Int
+  lastNotified      DateTime
+
   favoredNumber     Int       @default(0)
-  favoredBy         Json?
-  passwordResetHash String    @default("")
-  license           String?   @default(null)
-  suspended         Boolean?
+  favoredBy         Json
+  passwordResetHash String 
+  
+  suspended         Boolean
   favorites favorite[]
   histories history[]
 }
