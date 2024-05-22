@@ -2,7 +2,7 @@ const express=require('express');
 const router=express.Router();
 const multer=require('multer')
 const moviesController= require('../../controllers/movieController')
-router.route('/movies/:id')
+router.route('/movies')
     .post(moviesController.handleNewMovie)
 router.route('/movies/get/:id')
     .get(moviesController.handleGetMovieById)

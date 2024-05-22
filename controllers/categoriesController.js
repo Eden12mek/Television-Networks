@@ -2,8 +2,8 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const handleNewCategory = async (req, res) => {
-  const { name, moviesId } = req.body;
-  if (!name || !moviesId) {
+  const { name } = req.body;
+  if (!name ) {
     return res.status(400).json({ message: "Please provide category name and movie ID" });
   }
 
@@ -11,7 +11,6 @@ const handleNewCategory = async (req, res) => {
     const category = await prisma.category.create({
       data: {
         name,
-        moviesId: parseInt(moviesId),
       },
     });
     return res.status(201).json({ message: "New category created", category });
@@ -53,7 +52,7 @@ const handleGetCategoryById = async (req, res) => {
 
 const handleUpdateCategory = async (req, res) => {
   const { id } = req.params;
-  const { name, moviesId } = req.body;
+  const { name } = req.body;
 
   try {
     const category = await prisma.category.findUnique({ where: { id: parseInt(id) } });
@@ -65,7 +64,7 @@ const handleUpdateCategory = async (req, res) => {
       where: { id: parseInt(id) },
       data: {
         name,
-        moviesId: parseInt(moviesId),
+        
       },
     });
     return res.status(200).json({ message: "Category updated" });
