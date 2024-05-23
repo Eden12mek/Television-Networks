@@ -4,6 +4,7 @@
 /node_modules
 /.env
 /.pnp
+/TVN-Frontend
 .pnp.js
 
 # testing
