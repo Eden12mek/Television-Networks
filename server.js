@@ -15,13 +15,14 @@ app.use(express.json());
 
 app.use("/ums", require('./routes/api/register'));
 app.use("/ums", require('./routes/api/auth'));
+
+
+// app.use("/project", require('./routes/api/projectroute'));
+app.use(verifyJWT);
 app.use("/General", require('./routes/api/moviesrouter'));
 app.use("/General", require('./routes/api/channelrouter'));
 app.use("/General", require('./routes/api/categoriesrouter'));
 app.use("/General", require('./routes/api/typerouter'));
-// app.use("/project", require('./routes/api/projectroute'));
-// app.use(verifyJWT);
-
 // app.use("/trash", require('./routes/api/trash.js'));
 
 app.listen(port, () => {
