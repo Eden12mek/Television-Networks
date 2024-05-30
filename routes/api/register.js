@@ -2,6 +2,7 @@ const express=require('express');
 const router=express.Router();
 // const multer=require('multer')
 const registerController = require('../../controllers/registerController')
+const { adminOnly } = require('../middleware/roleMiddleware');
 // var storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
 //     console.log('calling destination...')
@@ -16,5 +17,5 @@ const registerController = require('../../controllers/registerController')
 // var upload = multer({ storage: storage })
 
 router.route('/register')
-    .post(registerController.handleNewUser)
+    .post(adminOnly,registerController.handleNewUser)
 module.exports=router;

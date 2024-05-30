@@ -1,10 +1,11 @@
+// controllers/categoriesController.js
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const handleNewCategory = async (req, res) => {
   const { name } = req.body;
-  if (!name ) {
-    return res.status(400).json({ message: "Please provide category name and movie ID" });
+  if (!name) {
+    return res.status(400).json({ message: "Please provide category name" });
   }
 
   try {
@@ -31,7 +32,6 @@ const handleGetAllCategories = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 
 const handleGetCategoryById = async (req, res) => {
   const { id } = req.params;
@@ -64,7 +64,6 @@ const handleUpdateCategory = async (req, res) => {
       where: { id: parseInt(id) },
       data: {
         name,
-        
       },
     });
     return res.status(200).json({ message: "Category updated" });

@@ -56,8 +56,13 @@ model User {
   refreshToken      String?
   favorites favorite[]
   histories history[]
+  role     Role     @default(USER)
 }
 
+enum Role {
+  ADMIN
+  USER
+}
 
 
 model favorite {

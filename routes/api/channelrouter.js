@@ -1,18 +1,28 @@
 const express=require('express');
 const router=express.Router();
+const verifyJWT = require('../middleware/verifyJWT');
+const { adminOnly } = require('../middleware/roleMiddleware');
+
 const multer=require('multer')
 const channelController= require('../../controllers/channelController')
-router.route('/channel')
-    .post(channelController.handleNewChannel)
-router.route('/channel/get/:id')
-    .get(channelController.handleGetChannelById)
-router.route('/channel/getall')
-    .get(channelController.handleGetAllChannels)
-router.route('/channel/update/:id')
-    .put(channelController.handleUpdateChannel)
-router.route('/channel/delete/:id')
-    .delete(channelController.handleDeleteChannel)
-router.route('/channel/changestatus/:id')
-    .get(channelController.toggleSuspend);
 
-module.exports=router;
+
+const {
+    handleNewChannel,
+    handleGetAllChannels,
+    handleGetChannelById,
+    handleUpdateChannel,
+    toggleSuspend,
+    handleDeleteChannel
+  } = require('../controllers/channelController');
+  
+  router.use(verifyJWT);
+  
+  router.post('/', adminOnly, handleNewChannel);
+  router.get('/', handleGetAllChannels);
+  router.get('/:id', handleGetChannelById);
+  router.put('/:id', adminOnly, handleUpdateChannel);
+  router.delete('/:id', adminOnly, handleDeleteChannel);
+  router.patch('/:id/suspend', adminOnly, toggleSuspend);
+  
+  module.exports = router;

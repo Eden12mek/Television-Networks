@@ -12,7 +12,7 @@ const handleAuth = async (req, res) => {
     }
 
     try {
-        const foundUser = await prisma.user.findUnique({ where: { phoneNum:phoneNum } });
+        const foundUser = await prisma.user.findUnique({ where: { phoneNum: phoneNum } });
         if (!foundUser) {
             return res.status(400).json({ "message": "Phone Number is not registered. Please sign up first" });
         }
@@ -23,7 +23,8 @@ const handleAuth = async (req, res) => {
                 {
                     "userInfo": {
                         "username": foundUser.username,
-                        "id": foundUser.id
+                        "id": foundUser.id,
+                        "role": foundUser.role // Include role in the token
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
@@ -31,7 +32,10 @@ const handleAuth = async (req, res) => {
             );
 
             const refresh_token = jwt.sign(
-                { "username": foundUser.username },
+                {
+                    "username": foundUser.username,
+                    "role": foundUser.role // Include role in the refresh token
+                },
                 process.env.REFRESH_TOKEN_SECRET,
                 { expiresIn: '1d' }
             );

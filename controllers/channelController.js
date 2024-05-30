@@ -1,3 +1,4 @@
+// controllers/channelController.js
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -9,9 +10,7 @@ const handleNewChannel = async (req, res) => {
 
   try {
     const channel = await prisma.channel.create({
-      data: {
-        name
-      },
+      data: { name },
     });
     return res.status(201).json({ message: "New channel created", channel });
   } catch (error) {
@@ -51,7 +50,7 @@ const handleGetChannelById = async (req, res) => {
 
 const handleUpdateChannel = async (req, res) => {
   const { id } = req.params;
-  const { name, movies } = req.body;
+  const { name } = req.body;
 
   try {
     const channel = await prisma.channel.findUnique({ where: { id: parseInt(id) } });
@@ -61,9 +60,7 @@ const handleUpdateChannel = async (req, res) => {
 
     await prisma.channel.update({
       where: { id: parseInt(id) },
-      data: {
-        name,
-      },
+      data: { name },
     });
     return res.status(200).json({ message: "Channel updated" });
   } catch (error) {
@@ -83,34 +80,31 @@ const handleDeleteChannel = async (req, res) => {
   }
 };
 
-
-
-
-
 const toggleSuspend = async (req, res) => {
-    const id = parseInt(req.params.id, 10); // Ensure id is an integer
-    try {
-        const result = await prisma.channel.findUnique({ where: { id } });
-        if (!result) {
-            return res.status(404).json({ message: "Channel not found" });
-        }
-
-        const updatedResult = await prisma.movies.update({
-            where: { id },
-            data: { suspend: !result.suspend }
-        });
-
-        return res.status(200).json({ message: "Status is updated", updatedResult });
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Server problem" });
+  const id = parseInt(req.params.id, 10);
+  try {
+    const channel = await prisma.channel.findUnique({ where: { id } });
+    if (!channel) {
+      return res.status(404).json({ message: "Channel not found" });
     }
+
+    const updatedChannel = await prisma.channel.update({
+      where: { id },
+      data: { suspend: !channel.suspend }
+    });
+
+    return res.status(200).json({ message: "Channel suspension status updated", updatedChannel });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
 };
-  module.exports = {
-    handleNewChannel,
-    handleGetAllChannels,
-    handleGetChannelById,
-    handleUpdateChannel,
-    toggleSuspend,
-    handleDeleteChannel,
-  };
+
+module.exports = {
+  handleNewChannel,
+  handleGetAllChannels,
+  handleGetChannelById,
+  handleUpdateChannel,
+  toggleSuspend,
+  handleDeleteChannel,
+};
