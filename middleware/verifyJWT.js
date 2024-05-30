@@ -3,7 +3,6 @@ require('dotenv').config();
 
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
-    console.log(authHeader);
     if (!authHeader?.startsWith('Bearer ')) return res.sendStatus(401); // Unauthorized
 
     const token = authHeader.split(' ')[1];
@@ -11,7 +10,16 @@ const verifyJWT = (req, res, next) => {
         token,
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
-            if (err) return res.sendStatus(403); // Forbidden
+            if (err) {
+                console.error('JWT verification error:', err);
+                return res.sendStatus(403); // Forbidden
+            }
+            
+            if (!decoded.userInfo || !decoded.userInfo.username || !decoded.userInfo.id || !decoded.userInfo.role) {
+                console.error('Invalid JWT payload:', decoded);
+                return res.sendStatus(403); // Forbidden
+            }
+
             req.user = {
                 username: decoded.userInfo.username,
                 id: decoded.userInfo.id,

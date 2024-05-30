@@ -104,29 +104,25 @@ const handleDeleteMovie = async (req, res) => {
   }
 };
 
-
 const toggleSuspend = async (req, res) => {
-    const id = parseInt(req.params.id, 10); // Ensure id is an integer
-    try {
-        const result = await prisma.movies.findUnique({ where: { id } });
-        if (!result) {
-            return res.status(404).json({ message: "Movie not found" });
-        }
-
-        const updatedResult = await prisma.movies.update({
-            where: { id },
-            data: { suspend: !result.suspend }
-        });
-
-        return res.status(200).json({ message: "Status is updated", updatedResult });
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Server problem" });
+  const id = parseInt(req.params.id, 10); // Ensure id is an integer
+  try {
+    const result = await prisma.movies.findUnique({ where: { id } });
+    if (!result) {
+      return res.status(404).json({ message: "Movie not found" });
     }
+
+    const updatedResult = await prisma.movies.update({
+      where: { id },
+      data: { suspend: !result.suspend }
+    });
+
+    return res.status(200).json({ message: "Status is updated", updatedResult });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server problem" });
+  }
 };
-
-
-
 
 module.exports = {
   handleNewMovie,

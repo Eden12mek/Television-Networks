@@ -1,8 +1,8 @@
 // routes/categories.js
 const express = require('express');
 const router = express.Router();
-const verifyJWT = require('../middleware/verifyJWT');
-const { adminOnly } = require('../middleware/roleMiddleware');
+const verifyJWT = require('../../middleware/verifyJWT');
+const { adminOnly } = require('../../middleware/roleMiddleware');
 const categoriesController = require('../../controllers/categoriesController');
 
 router.use(verifyJWT);

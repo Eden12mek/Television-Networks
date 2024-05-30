@@ -21,11 +21,9 @@ const handleAuth = async (req, res) => {
         if (match) {
             const access_token = jwt.sign(
                 {
-                    "userInfo": {
-                        "username": foundUser.username,
-                        "id": foundUser.id,
-                        "role": foundUser.role // Include role in the token
-                    }
+                    "id": foundUser.id,
+                    "username": foundUser.username,
+                    "role": foundUser.role // Include role in the token
                 },
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: '1d' }
@@ -33,6 +31,7 @@ const handleAuth = async (req, res) => {
 
             const refresh_token = jwt.sign(
                 {
+                    "id": foundUser.id,
                     "username": foundUser.username,
                     "role": foundUser.role // Include role in the refresh token
                 },
@@ -46,7 +45,8 @@ const handleAuth = async (req, res) => {
             });
 
             res.cookie('jwt', refresh_token, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 }); // secure:true in production
-            res.json({ access_token, foundUser });
+            // Send the access token and user information in the response
+            res.json({ access_token, userInfo: { id: foundUser.id, username: foundUser.username, role: foundUser.role } });
         } else {
             res.status(401).json({ "message": "Wrong password" });
         }
