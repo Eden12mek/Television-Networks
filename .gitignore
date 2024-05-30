@@ -6,6 +6,10 @@
 /.pnp
 /TVN-Frontend
 .pnp.js
+.home.js
+.landigPage.js
+admin.js
+admin2.js
 
 # testing
 /coverage
