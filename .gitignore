@@ -10,6 +10,7 @@
 .landigPage.js
 admin.js
 admin2.js
+.logEvents.js
 
 # testing
 /coverage
