@@ -5,10 +5,10 @@ const verifyJWT = require('../../middleware/verifyJWT');
 const { adminOnly } = require('../../middleware/roleMiddleware');
 const moviesController = require('../../controllers/movieController');
 
-router.use(verifyJWT);
+// router.use(verifyJWT);
 
 router.route('/movies')
-    .post(adminOnly, moviesController.handleNewMovie);
+    .post( moviesController.handleNewMovie);
 router.route('/movies/get/:id')
     .get(moviesController.handleGetMovieById);
 router.route('/movies/getall')

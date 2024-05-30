@@ -9,7 +9,7 @@ const channelController= require('../../controllers/channelController')
 
 
 router.route('/channel')
-.post(adminOnly,channelController.handleNewChannel);
+.post(verifyJWT,channelController.handleNewChannel);
 router.route('/channel/get/:id')
 .get(channelController.handleGetChannelById);
 router.route('/channel/getall')
