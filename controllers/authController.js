@@ -12,7 +12,7 @@ const handleAuth = async (req, res) => {
     }
 
     try {
-        const foundUser = await prisma.user.findUnique({ where: { phoneNum: phoneNum } });
+        const foundUser = await prisma.user.findUnique({ where: { phoneNum:phoneNum } });
         if (!foundUser) {
             return res.status(400).json({ "message": "Phone Number is not registered. Please sign up first" });
         }
@@ -21,20 +21,17 @@ const handleAuth = async (req, res) => {
         if (match) {
             const access_token = jwt.sign(
                 {
-                    "id": foundUser.id,
-                    "username": foundUser.username,
-                    "role": foundUser.role // Include role in the token
+                    "userInfo": {
+                        "username": foundUser.username,
+                        "id": foundUser.id
+                    }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: '1d' }
             );
 
             const refresh_token = jwt.sign(
-                {
-                    "id": foundUser.id,
-                    "username": foundUser.username,
-                    "role": foundUser.role // Include role in the refresh token
-                },
+                { "username": foundUser.username },
                 process.env.REFRESH_TOKEN_SECRET,
                 { expiresIn: '1d' }
             );
@@ -45,8 +42,7 @@ const handleAuth = async (req, res) => {
             });
 
             res.cookie('jwt', refresh_token, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 }); // secure:true in production
-            // Send the access token and user information in the response
-            res.json({ access_token, userInfo: { id: foundUser.id, username: foundUser.username, role: foundUser.role } });
+            res.json({ access_token, foundUser });
         } else {
             res.status(401).json({ "message": "Wrong password" });
         }
