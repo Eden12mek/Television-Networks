@@ -1,6 +1,5 @@
 const express=require('express');
 const router=express.Router();
-const verifyJWT = require('../../middleware/verifyJWT');
 
 const multer=require('multer')
 const channelController= require('../../controllers/channelController')
@@ -8,15 +7,17 @@ const channelController= require('../../controllers/channelController')
 
 
 router.route('/channel')
-.post(verifyJWT,channelController.handleNewChannel);
+.post(channelController.handleNewChannel);
 router.route('/channel/get/:id')
-.get(verifyJWT,channelController.handleGetChannelById);
+.get(channelController.handleGetChannelById);
 router.route('/channel/getall')
 .get(channelController.handleGetAllChannels);
 router.route('/channel/update/:id')
-.put(verifyJWT, channelController.handleUpdateChannel);
+.put( channelController.handleUpdateChannel);
 router.route('/channel/delete/:id')
-.delete(verifyJWT, channelController.handleDeleteChannel);
+.delete( channelController.handleDeleteChannel);
+router.route('/channel/changestatus/:id')
+    .get( channelController.toggleSuspend);
 
   
 module.exports = router;

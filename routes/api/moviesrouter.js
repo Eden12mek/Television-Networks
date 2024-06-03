@@ -4,7 +4,7 @@ const router = express.Router();
 const verifyJWT = require('../../middleware/verifyJWT');
 const moviesController = require('../../controllers/movieController');
 
-router.use(verifyJWT);
+// router.use(verifyJWT);
 
 router.route('/movies')
     .post( moviesController.handleNewMovie);

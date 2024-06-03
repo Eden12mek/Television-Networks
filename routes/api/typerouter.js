@@ -5,7 +5,7 @@ const typeController= require('../../controllers/typeController')
 
 const multer=require('multer')
 
-router.use(verifyJWT);
+// router.use(verifyJWT);
 
 
 router.route('/type')

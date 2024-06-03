@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const verifyJWT = require('./middleware/verifyJWT');
 const { verify } = require("jsonwebtoken");
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.use(express.json());
 
@@ -14,7 +14,7 @@ app.use("/ums", require('./routes/api/register'));
 app.use("/ums", require('./routes/api/auth'));
 
 // Place verifyJWT middleware here to protect resource management routes
-app.use(verifyJWT);
+// app.use(verifyJWT);
 
 app.use("/General", require('./routes/api/moviesrouter'));
 app.use("/General", require('./routes/api/channelrouter'));

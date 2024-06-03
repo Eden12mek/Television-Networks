@@ -4,17 +4,17 @@ const router = express.Router();
 const verifyJWT = require('../../middleware/verifyJWT');
 const categoriesController = require('../../controllers/categoriesController');
 
-router.use(verifyJWT);
+// router.use(verifyJWT);
 
 router.route('/categories')
-    .post(verifyJWT, categoriesController.handleNewCategory);
+    .post( categoriesController.handleNewCategory);
 router.route('/categories/get/:id')
-    .get(verifyJWT,categoriesController.handleGetCategoryById);
+    .get(categoriesController.handleGetCategoryById);
 router.route('/categories/getall')
-    .get(verifyJWT,categoriesController.handleGetAllCategories);
+    .get(categoriesController.handleGetAllCategories);
 router.route('/categories/update/:id')
-    .put(verifyJWT, categoriesController.handleUpdateCategory);
+    .put( categoriesController.handleUpdateCategory);
 router.route('/categories/delete/:id')
-    .delete(verifyJWT, categoriesController.handleDeleteCategory);
+    .delete( categoriesController.handleDeleteCategory);
 
 module.exports = router;
