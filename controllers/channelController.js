@@ -3,6 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const handleNewChannel = async (req, res) => {
+  console.log(req.body)
   const { name } = req.body;
   if (!name) {
     return res.status(400).json({ message: "Please provide channel name" });

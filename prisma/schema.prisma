@@ -51,7 +51,7 @@ model User {
   password          String
   email             String
   phoneNum          String    @unique
-  imgUrl            String
+  imgUrl            String?
   suspended         Boolean?
   refreshToken      String?
   favorites favorite[]
