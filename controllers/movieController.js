@@ -4,6 +4,8 @@ const prisma = new PrismaClient();
 
 const handleNewMovie = async (req, res) => {
   const { title, duration, description, videoUrl, channelId, typeId, categoryId } = req.body;
+
+  console.log('Received data:', req.body); 
   if (!title || !videoUrl || !channelId || !typeId || !categoryId) {
     return res.status(400).json({ message: "Please provide movie title, video URL, duration, description, channel ID, type ID, and category ID" });
   }
@@ -12,12 +14,12 @@ const handleNewMovie = async (req, res) => {
     const movie = await prisma.movies.create({
       data: {
         title,
-        duration,
+        duration: parseInt(duration),
         description,
         videoUrl,
-        channelId,
-        typeId,
-        categoryId,
+        channelId: parseInt(channelId),
+        typeId: parseInt(typeId),
+        categoryId: parseInt(categoryId)
       },
     });
     return res.status(201).json({ message: "New movie created", movie });

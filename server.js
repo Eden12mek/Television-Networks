@@ -20,10 +20,10 @@ app.use("/ums", require('./routes/api/auth'));
 // Place verifyJWT middleware here to protect resource management routes
 // app.use(verifyJWT);
 
-// app.use("/General", require('./routes/api/moviesrouter'));
+app.use("/General", require('./routes/api/moviesrouter'));
 app.use("/General", require('./routes/api/channelrouter'));
-// app.use("/General", require('./routes/api/categoriesrouter'));
-// app.use("/General", require('./routes/api/typerouter'));
+app.use("/General", require('./routes/api/categoriesrouter'));
+app.use("/General", require('./routes/api/typerouter'));
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
