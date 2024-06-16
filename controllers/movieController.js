@@ -1,4 +1,3 @@
-// controllers/moviesController.js
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -63,6 +62,26 @@ const handleGetMovieById = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getMoviesByCategory = async (req, res) => {
+  const { category } = req.query;
+  
+  try {
+    const categoryId = parseInt(category, 10); // Parse category ID to integer
+    const movies = await prisma.movies.findMany({
+      where: { categoryId }, // Use categoryId directly
+      include: {
+        channel: true,
+        type: true,
+        category: true,
+      },
+    });
+    res.status(200).json(movies);
+  } catch (error) {
+    console.error('Error fetching movies by category:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -132,5 +151,6 @@ module.exports = {
   handleGetMovieById,
   handleUpdateMovie,
   toggleSuspend,
+  getMoviesByCategory,
   handleDeleteMovie,
-};
+}

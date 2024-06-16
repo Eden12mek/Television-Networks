@@ -5,14 +5,14 @@ const prisma = new PrismaClient();
 
 const handleAuth = async (req, res) => {
     console.log(req.body);
-    const { phoneNum, password } = req.body;
-    
+    const { phoneNum, password } = req.body; // Ensure this matches the frontend
+
     if (!phoneNum || !password) {
         return res.status(400).json({ "message": "Both phone number and password are required" });
     }
 
     try {
-        const foundUser = await prisma.user.findUnique({ where: { phoneNum:phoneNum } });
+        const foundUser = await prisma.user.findUnique({ where: { phoneNum: phoneNum } });
         if (!foundUser) {
             return res.status(400).json({ "message": "Phone Number is not registered. Please sign up first" });
         }
@@ -23,7 +23,8 @@ const handleAuth = async (req, res) => {
                 {
                     "userInfo": {
                         "username": foundUser.username,
-                        "id": foundUser.id
+                        "id": foundUser.id,
+                        "role": foundUser.role // Assuming you have a role property
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,

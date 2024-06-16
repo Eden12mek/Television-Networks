@@ -20,9 +20,8 @@ const handleNewUser = async (req, res) => {
                 password: hashedPwd,
                 email,
                 phoneNum,
-                imgUrl:"fghasgd",
+                imgUrl: req.file ? req.file.originalname : "", // Save the image filename
                 role,
-                
             }
         });
         console.log(newUser);
@@ -32,7 +31,17 @@ const handleNewUser = async (req, res) => {
         return res.status(500).json({ "message": "Server problem" });
     }
 };
+const getUserCount = async (req, res) => {
+    try {
+        const count = await prisma.user.count();
+        res.status(200).json({ count });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 module.exports = {
-    handleNewUser
+    handleNewUser,
+    getUserCount
 };

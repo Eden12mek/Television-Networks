@@ -4,19 +4,19 @@ const router = express.Router();
 const verifyJWT = require('../../middleware/verifyJWT');
 const moviesController = require('../../controllers/movieController');
 
-// router.use(verifyJWT);
-
 router.route('/movies')
-    .post( moviesController.handleNewMovie);
+    .post(moviesController.handleNewMovie);
 router.route('/movies/get/:id')
     .get(moviesController.handleGetMovieById);
 router.route('/movies/getall')
     .get(moviesController.handleGetAllMovies);
 router.route('/movies/update/:id')
-    .put( moviesController.handleUpdateMovie);
+    .put(moviesController.handleUpdateMovie);
 router.route('/movies/delete/:id')
-    .delete( moviesController.handleDeleteMovie);
+    .delete(moviesController.handleDeleteMovie);
 router.route('/movies/changestatus/:id')
-    .get( moviesController.toggleSuspend);
+    .get(moviesController.toggleSuspend);
+router.route('/movies/getbycategory') // Ensure this matches with the backend endpoint
+    .get(moviesController.getMoviesByCategory); 
 
 module.exports = router;
